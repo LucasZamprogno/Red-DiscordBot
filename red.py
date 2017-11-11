@@ -611,7 +611,9 @@ if __name__ == '__main__':
     bot = initialize()
     loop = asyncio.get_event_loop()
     try:
+        print("Before run in red.py")
         loop.run_until_complete(main(bot))
+        print("After run in red.py")
     except discord.LoginFailure:
         bot.logger.error(traceback.format_exc())
         if not bot.settings.no_prompt:
@@ -634,7 +636,9 @@ if __name__ == '__main__':
                              exc_info=e)
         loop.run_until_complete(bot.logout())
     finally:
+        print("Before close in red.py")
         loop.close()
+        print("After close in red.py")
         if bot._shutdown_mode is True:
             exit(0)
         elif bot._shutdown_mode is False:

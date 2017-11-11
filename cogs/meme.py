@@ -12,8 +12,25 @@ class Meme:
         self.last_author = None
         self.ayy_pattern = re.compile(r'^ay{2,}$')
         self.hmm_pattern = re.compile(r'^hm{2,}$')
+        self.anyway_pattern = re.compile(r'^anyway(s)?(\.\.\.)?$')
         self.mad_pattern = re.compile(r'.*(fuck (you|off)|stfu|shut (the fuck up|up)|go (away|fuck yourself)|gtfo|you suck|(suck|eat) a dick).*')
         self.how_pattern = re.compile(r'.*how [a-z]+ (is|are|was|do you) .*')
+        self.thinking = '''
+```⠀⠰⡿⠿⠛⠛⠻⠿⣷
+⠀⠀⠀⠀⠀⠀⣀⣄⡀⠀⠀⠀⠀⢀⣀⣀⣤⣄⣀⡀
+⠀⠀⠀⠀⠀⢸⣿⣿⣷⠀⠀⠀⠀⠛⠛⣿⣿⣿⡛⠿⠷
+⠀⠀⠀⠀⠀⠘⠿⠿⠋⠀⠀⠀⠀⠀⠀⣿⣿⣿⠇
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁
+⠀⠀⠀⠀⣿⣷⣄⠀⢶⣶⣷⣶⣶⣤⣀
+⠀⠀⠀⠀⣿⣿⣿⠀⠀⠀⠀⠀⠈⠙⠻⠗
+⠀⠀⠀⣰⣿⣿⣿⠀⠀⠀⠀⢀⣀⣠⣤⣴⣶⡄
+⠀⣠⣾⣿⣿⣿⣥⣶⣶⣿⣿⣿⣿⣿⠿⠿⠛⠃
+⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄
+⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡁
+⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁
+⠀⠀⠛⢿⣿⣿⣿⣿⣿⣿⡿⠟
+⠀⠀⠀⠀⠀⠉⠉⠉```
+'''
 
     @commands.command()
     async def memes(self):
@@ -60,6 +77,10 @@ class Meme:
         await self.bot.say("http://www.theonion.com/article/beautiful-cinnamon-roll-too-good-for-this-world-to-35038")
 
     @commands.command()
+    async def kate(self):
+        await self.bot.say("http://www.theonion.com/article/beautiful-cinnamon-roll-too-good-for-this-world-to-35038")
+
+    @commands.command()
     async def tite(self):
         await self.bot.say("http://i.imgur.com/MQNWHJG.jpg")
 
@@ -79,6 +100,23 @@ class Meme:
     async def sin(self):
         await self.bot.say("http://i.imgur.com/irNt02G.png")
 
+    @commands.command()
+    async def hmm(self):
+        await self.bot.say(self.thinking)
+
+    @commands.command()
+    async def o_o(self):
+        await self.bot.say("https://i.imgur.com/ZkHGWn3.jpg")
+
+    @commands.command()
+    async def todd(self):
+        await self.bot.say("https://i.imgur.com/4c5j7mt.png")
+
+    @commands.command()
+    async def korea(self):
+        await self.bot.say("https://streamable.com/sla9c")
+    
+
 async def check_messages(message):
     current_author = message.author.id
     prev_author = meme_bot.last_author
@@ -91,6 +129,9 @@ async def check_messages(message):
             return
         if meme_bot.hmm_pattern.fullmatch(content) is not None:
             await meme_bot.bot.add_reaction(message, '\U0001F914')
+            return
+        if meme_bot.anyway_pattern.fullmatch(content) is not None:
+            await meme_bot.bot.send_message(message.channel, "Here's Wonderwall\nhttps://www.youtube.com/watch?v=6hzrDeceEKc")
             return
         if (prev_author == meme_bot.bot.user.id) or ("chloe" in content):   
             if meme_bot.mad_pattern.search(content) is not None:
@@ -136,11 +177,17 @@ async def check_messages(message):
             else:
                 await meme_bot.bot.send_message(message.channel, '''"Yosh" - Genji''')
             return
+        if "amberprice" in content:
+            await meme_bot.bot.send_message(message.channel, "Pricefield > Amberprice")
+            return
         if "my man" in content:
             await meme_bot.bot.send_message(message.channel, "https://i.imgur.com/0XZ93Zx.jpg")
             return
         if (content == "thinking") or (meme_bot.ayy_pattern.fullmatch(content)) is not None:
             await meme_bot.bot.add_reaction(message, '\U0001F914')
+            return
+        if "pricefield" in content:
+            await meme_bot.bot.add_reaction(message, '\U00002764')
             return
         if "dank" in content:
             await meme_bot.bot.add_reaction(message, '\U0001F44C')
@@ -148,18 +195,15 @@ async def check_messages(message):
         if "spicy" in content:
             await meme_bot.bot.add_reaction(message, '\U0001F525')
             return
-        if ("christmas" in content) or ("xmas" in content):
+        '''if ("christmas" in content) or ("xmas" in content):
             await meme_bot.bot.add_reaction(message, '\U0001F384')
-            return
+            return'''
         if "vegan" in content:
             await meme_bot.bot.add_reaction(message, '\U0001F951')
             return
         if " xd" in content or content == "xd":
             await meme_bot.bot.add_reaction(message, '\U0001F1FD')
             await meme_bot.bot.add_reaction(message, '\U0001F1E9')
-            return
-        if content == "anyways":
-            await meme_bot.bot.send_message(message.channel, "Here's Wonderwall\nhttps://www.youtube.com/watch?v=6hzrDeceEKc")
             return
         for x in ['would', 'could', 'should', 'must']:
             if (x + " of ") in content:

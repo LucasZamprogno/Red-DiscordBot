@@ -15,6 +15,8 @@ class Notifier:
             client_secret='4rlH_-s4XSgtWMxBUk-ueAiOLhw', 
             user_agent='windows:personal-notifier-bot:v0.1 (by /u/lucas_py_bot)')
         self.blacklist = []
+        self.timeout = 2
+        self.refresh = 900
         if os.path.isfile(self.filename):
             with open(self.filename) as f:
                 self.blacklist = f.readlines()
@@ -28,7 +30,7 @@ class Notifier:
 
     @commands.command()
     async def foo(self):
-        await notifier_bot.bot.send_message(discord.Object(id='227205391816065024'), 'bar')
+        await self.bot.send_message(discord.Object(id='227205391816065024'), 'bar')
 
     @commands.command()
     async def clear_blacklist(self):
@@ -37,31 +39,38 @@ class Notifier:
         await self.bot.say('Done')
 
     async def check(self):
-        keywords = ['cpsc', '310']
-        sub = 'ubc'
-        while self is self.bot.get_cog('Notifier'):
-            try:
-                recent = []
-                for post in self.reddit.subreddit('ubc').new(limit=25):   
-                    title_match = self.has_all_in_title(post, keywords)
-                    body_match = self.has_all_in_body(post, keywords)
-                    try:
-                        comment_match = self.comment_matches_all(post, keywords)
-                    except:
-                        await asyncio.sleep(2)
-                        pass
-                    if (title_match or body_match) and (not post.id in self.blacklist):
-                        prefix = 'New post about 310: '
-                        await notifier_bot.bot.send_message(discord.User(id='129718015003459585'), prefix + post.url)
-                        recent.append(post.id)
-                    elif (comment_match is not None) and (not post.id in self.blacklist):
-                        prefix = 'New comment about 310: '
-                        await notifier_bot.bot.send_message(discord.User(id='129718015003459585'), prefix + comment_match)
-                        recent.append(post.id)
-                self.add_to_blacklist(recent)
-                await asyncio.sleep(900)
-            except:
-                await asyncio.sleep(2)
+        checks = [('ubc', ['cpsc', '310'], "310", True), ('bapcsalescanada', ['1440', 'hz', 'monitor'], "monitors", False)]
+        while self == self.bot.get_cog('Notifier'):
+            for check in checks:
+                url = check[0]
+                keywords = check[1]
+                topic = check[2]
+                check_comments = check[3]
+                print("Checking " + topic)
+                try:
+                    recent = []
+                    for post in self.reddit.subreddit(url).new(limit=25):
+                        title_match = self.has_all_in_title(post, keywords)
+                        body_match = self.has_all_in_body(post, keywords)
+                        '''if check_comments:
+                            comment_match = self.comment_matches_all(post, keywords)
+                        else:
+                            comment_match = None'''
+                        if (title_match or body_match) and (not post.id in self.blacklist):
+                            prefix = 'New post about ' + topic + ' '
+                            await self.bot.send_message(discord.User(id='129718015003459585'), prefix + post.url)
+                            recent.append(post.id)
+                        '''elif (comment_match is not None) and (not post.id in self.blacklist):
+                            prefix = 'New comment about ' + topic + ' '
+                            await self.bot.send_message(discord.User(id='129718015003459585'), prefix + comment_match)
+                            recent.append(post.id)'''
+                    self.add_to_blacklist(recent)
+                    self.timeout = 2
+                except Exception as e:
+                    print(e)
+                    await asyncio.sleep(min(self.timeout, self.refresh))
+                    self.timeout *= 2
+            await asyncio.sleep(self.refresh)
 
     def add_to_blacklist(self, recent):
         for item in recent:
@@ -84,7 +93,6 @@ class Notifier:
         return True
 
     def comment_matches_all(self, post, keyword_arr):
-        post.comments.replace_more(limit=0)
         comment_queue = post.comments[:]
         while comment_queue:
             found = True
@@ -98,8 +106,6 @@ class Notifier:
         return None
 
 def setup(bot):
-    global notifier_bot
     notifier_bot = Notifier(bot)
-    loop = asyncio.get_event_loop()
-    loop.create_task(notifier_bot.check())
     bot.add_cog(notifier_bot)
+    bot.loop.create_task(notifier_bot.check())

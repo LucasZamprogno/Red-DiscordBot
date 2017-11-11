@@ -419,7 +419,7 @@ class Audio:
             song_filename, use_avconv=use_avconv, options=options)
 
         # Set initial volume
-        vol = self.get_server_settings(server)['VOLUME'] / 100
+        vol = self.get_server_settings(server)['VOLUME'] / 400
         voice_client.audio_player.volume = vol
 
         return voice_client  # Just for ease of use, it's modified in-place
@@ -1114,7 +1114,6 @@ class Audio:
         self.save_settings()
 
     @audioset.command(pass_context=True, name="volume", no_pm=True)
-    @checks.mod_or_permissions(manage_messages=True)
     async def audioset_volume(self, ctx, percent: int=None):
         """Sets the volume (0 - 100)
         Note: volume may be set up to 200 but you may experience clipping."""
@@ -1132,7 +1131,7 @@ class Audio:
             # Set volume of playing audio
             vc = self.voice_client(server)
             if vc:
-                vc.audio_player.volume = percent / 100
+                vc.audio_player.volume = percent / 400
 
             self.save_settings()
         else:
