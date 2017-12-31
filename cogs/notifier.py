@@ -39,7 +39,12 @@ class Notifier:
         await self.bot.say('Done')
 
     async def check(self):
-        checks = [('ubc', ['cpsc', '310'], "310", True), ('bapcsalescanada', ['1440', 'hz', 'monitor'], "monitors", False)]
+        checks = [('ubc', ['cpsc', '310'], "310", True), 
+        ('bapcsalescanada', ['XB271HU'], "XB271HU", False), 
+        ('bapcsalescanada', ['XG2703'], "XG2703", False), 
+        ('bapcsalescanada', ['PG279Q'], "PG279Q", False), 
+        ('bapcsalescanada', ['1440', 'hz', 'monitor'], "monitors", False)
+        ]
         while self == self.bot.get_cog('Notifier'):
             for check in checks:
                 url = check[0]

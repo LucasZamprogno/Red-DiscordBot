@@ -307,6 +307,7 @@ class Audio:
         status = list(self.bot.servers)[0].me.status
         game = discord.Game(name=song.title)
         await self.bot.change_presence(status=status, game=game)
+        print("made it here")
         log.debug('Bot status changed to song title: ' + song.title)
 
     def _add_to_queue(self, server, url):
@@ -2064,7 +2065,6 @@ class Audio:
                 song = None
             self.queue[server.id]["NOW_PLAYING"] = song
             log.debug("set now_playing for sid {}".format(server.id))
-            self.bot.loop.create_task(self._update_bot_status())
 
         elif server.id in self.downloaders:
             # We're playing but we might be able to download a new song
@@ -2081,6 +2081,7 @@ class Audio:
                 # Download next song
                 next_dl.start()
                 await self._download_next(server, curr_dl, next_dl)
+        self.bot.loop.create_task(self._update_bot_status())
 
     async def queue_scheduler(self):
         while self == self.bot.get_cog('Audio'):

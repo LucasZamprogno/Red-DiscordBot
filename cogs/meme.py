@@ -115,6 +115,14 @@ class Meme:
     @commands.command()
     async def korea(self):
         await self.bot.say("https://streamable.com/sla9c")
+        
+    @commands.command()
+    async def shock(self):
+        await self.bot.say("https://imgur.com/gallery/KR93TA2")
+
+    @commands.command()
+    async def failure(self):
+        await self.bot.say("https://i.imgur.com/rrRxJyh.jpg")
     
 
 async def check_messages(message):
