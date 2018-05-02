@@ -611,9 +611,7 @@ if __name__ == '__main__':
     bot = initialize()
     loop = asyncio.get_event_loop()
     try:
-        print("Before run in red.py")
         loop.run_until_complete(main(bot))
-        print("After run in red.py")
     except discord.LoginFailure:
         bot.logger.error(traceback.format_exc())
         if not bot.settings.no_prompt:
