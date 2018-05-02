@@ -245,7 +245,8 @@ class General:
         total_users = len(server.members)
         text_channels = len([x for x in server.channels
                              if x.type == discord.ChannelType.text])
-        voice_channels = len(server.channels) - text_channels
+        voice_channels = len([x for x in server.channels
+                             if x.type == discord.ChannelType.voice])
         passed = (ctx.message.timestamp - server.created_at).days
         created_at = ("Since {}. That's over {} days ago!"
                       "".format(server.created_at.strftime("%d %b %Y %H:%M"),
@@ -339,7 +340,7 @@ class General:
             if "@everyone" in check or "@here" in check:
                 await self.bot.say("Nice try.")
                 return
-            p = NewPoll(message, self)
+            p = NewPoll(message, " ".join(text), self)
             if p.valid:
                 self.poll_sessions.append(p)
                 await p.start()
@@ -377,13 +378,12 @@ class General:
             return user.joined_at
 
 class NewPoll():
-    def __init__(self, message, main):
+    def __init__(self, message, text, main):
         self.channel = message.channel
         self.author = message.author.id
         self.client = main.bot
         self.poll_sessions = main.poll_sessions
-        msg = message.content[6:]
-        msg = msg.split(";")
+        msg = [ans.strip() for ans in text.split(";")]
         if len(msg) < 2: # Needs at least one question and 2 choices
             self.valid = False
             return None
