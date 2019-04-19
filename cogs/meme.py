@@ -123,7 +123,10 @@ class Meme:
     @commands.command()
     async def failure(self):
         await self.bot.say("https://i.imgur.com/rrRxJyh.jpg")
-    
+
+    @commands.command()
+    async def false(self):
+        await self.bot.say("https://www.youtube.com/watch?v=GM-e46xdcUo")
 
 async def check_messages(message):
     current_author = message.author.id
